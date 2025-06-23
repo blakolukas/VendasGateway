@@ -9,12 +9,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/fallback")
 public class FallbackController {
-    @GetMapping("/currency-conversion")
-    public ResponseEntity<String> currencyConversionFallback() {
+    
+    @GetMapping("/vendas")
+    public ResponseEntity<String> vendasFallback() {
         return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body("Serviços temporariamente indisponíveis. Tente novamente.");
-            //Implementação mais adequada seria retornar dados em cache de
-            //uma requisição anterior com sucesso
+            .status(HttpStatus.SERVICE_UNAVAILABLE)
+            .body("Serviço de Vendas temporariamente indisponível. Tente novamente em alguns instantes.");
+    }
+    
+    @GetMapping("/taxes")
+    public ResponseEntity<String> taxesFallback() {
+        return ResponseEntity
+            .status(HttpStatus.SERVICE_UNAVAILABLE)
+            .body("Serviço de Impostos temporariamente indisponível. Tente novamente em alguns instantes.");
+    }
+    
+    @GetMapping("/history")
+    public ResponseEntity<String> historyFallback() {
+        return ResponseEntity
+            .status(HttpStatus.SERVICE_UNAVAILABLE)
+            .body("Serviço de Histórico temporariamente indisponível. Tente novamente em alguns instantes.");
     }
 }

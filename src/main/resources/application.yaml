@@ -9,26 +9,46 @@ spring:
         locator:
           lower-case-service-id: true
       routes:
-        - id: currency-conversion
-          uri: lb://currency-conversion
+        # Vendas Service Routes
+        - id: vendas-service
+          uri: lb://vendas
           predicates:
-            - Path=/convert/**
+            - Path=/vendas/**
           filters:
             - name: CircuitBreaker
               args:
-                name: currencyConversionCircuitBreaker
-                fallbackUri: forward:/fallback/currency-conversion
-            - RewritePath=/convert/?(?<resto>.*), /currency-conversion-feign/$\{resto}
-        - id: currency-exchange
-          uri: lb://currency-exchange
+                name: vendasCircuitBreaker
+                fallbackUri: forward:/fallback/vendas
+            - RewritePath=/vendas/?(?<resto>.*), /$\{resto}
+        
+        # Taxes Service Routes
+        - id: taxes-service
+          uri: lb://taxesservice
           predicates:
-            - Path=/convertionrate/**
+            - Path=/taxes/**
           filters:
-            - RewritePath=/convertionrate/?(?<resto>.*), /currency-exchange/$\{resto}
+            - name: CircuitBreaker
+              args:
+                name: taxesCircuitBreaker
+                fallbackUri: forward:/fallback/taxes
+            - RewritePath=/taxes/?(?<resto>.*), /api/taxes/$\{resto}
+        
+        # History Service Routes
+        - id: history-service
+          uri: lb://history
+          predicates:
+            - Path=/history/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: historyCircuitBreaker
+                fallbackUri: forward:/fallback/history
+            - RewritePath=/history/?(?<resto>.*), /$\{resto}
+
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://localhost:8000/eureka
 management:
   endpoints:
     web:
